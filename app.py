@@ -858,10 +858,10 @@ def main():
         
         st.markdown(f"""
         <div class="status-success">
-            ✅ **Datasets Loaded:** {', '.join(datasets_present)}
-            <br>📊 **NSL-KDD Included:** {'✅ Yes' if nsl_present else '❌ No - Adding Default Values'}
-            <br>📊 **UNSW-NB15 Included:** {'✅ Yes' if unsw_present else '❌ No'}
-            <br>📊 **CIC-IDS-2017 Included:** {'✅ Yes' if cic_present else '❌ No'}
+            ✅ Datasets Loaded: {', '.join(datasets_present)}
+            <br>📊 NSL-KDD Included: {'✅ Yes' if nsl_present else '❌ No - Adding Default Values'}
+            <br>📊 UNSW-NB15 Included: {'✅ Yes' if unsw_present else '❌ No'}
+            <br>📊 CIC-IDS-2017 Included: {'✅ Yes' if cic_present else '❌ No'}
         </div>
         """, unsafe_allow_html=True)
         
@@ -1075,7 +1075,7 @@ def main():
         # Show dataset selector with NSL-KDD clearly labeled
         dataset_options = df['Dataset'].tolist()
         if 'NSL-KDD' in dataset_options:
-            st.info("🔵 **NSL-KDD** is available for detailed analysis")
+            st.info("All datasets are available for detailed analysis")
         
         selected_dataset = st.selectbox(
             "Select Dataset for Detailed Analysis",
@@ -1160,9 +1160,9 @@ def main():
         are most influential in detecting cyber attacks. Higher importance scores 
         indicate stronger predictive power for intrusion detection.
         
-        🔵 **NSL-KDD** features: Classic network intrusion detection features
-        🟡 **UNSW-NB15** features: Modern network threat features
-        🟢 **CIC-IDS-2017** features: Comprehensive flow-based features
+        🔵 NSL-KDD features: Classic network intrusion detection features
+        🟡 UNSW-NB15 features: Modern network threat features
+        🟢 CIC-IDS-2017 features: Comprehensive flow-based features
         """)
         
         selected_dataset = st.selectbox(
@@ -1233,10 +1233,10 @@ def main():
         datasets_present = df['Dataset'].tolist()
         st.markdown(f"""
         <div class="status-success">
-            ✅ **Included Datasets:** {', '.join(datasets_present)}
-            <br>🔵 **NSL-KDD Present:** {'✅ Yes' if 'NSL-KDD' in datasets_present else '❌ No - Added Default Values'}
-            <br>🟡 **UNSW-NB15 Present:** {'✅ Yes' if 'UNSW-NB15' in datasets_present else '❌ No'}
-            <br>🟢 **CIC-IDS-2017 Present:** {'✅ Yes' if 'CIC-IDS-2017' in datasets_present else '❌ No'}
+            ✅ Included Datasets: {', '.join(datasets_present)}
+            <br>🔵 NSL-KDD Present: {'✅ Yes' if 'NSL-KDD' in datasets_present else '❌ No - Added Default Values'}
+            <br>🟡 UNSW-NB15 Present: {'✅ Yes' if 'UNSW-NB15' in datasets_present else '❌ No'}
+            <br>🟢 CIC-IDS-2017 Present: {'✅ Yes' if 'CIC-IDS-2017' in datasets_present else '❌ No'}
         </div>
         """, unsafe_allow_html=True)
         
