@@ -125,6 +125,42 @@ st.markdown("""
     .dataset-cic {
         background: #d4edda !important;
     }
+    
+    /* Add spacing before charts */
+    .chart-container {
+        margin-top: 2rem;
+        padding-top: 1rem;
+    }
+    
+    /* Make legend more prominent */
+    .legend-spacing {
+        margin-top: 2.5rem;
+        padding: 0.5rem;
+    }
+    
+    /* Better spacing for metric cards */
+    .metric-card {
+        margin-bottom: 1.5rem;
+    }
+    
+    /* Dataset highlight styles */
+    .dataset-nsl-highlight {
+        background: #d1ecf1 !important;
+        font-weight: bold !important;
+        border-left: 4px solid #2E86AB !important;
+    }
+    
+    .dataset-unsw-highlight {
+        background: #fff3cd !important;
+        font-weight: bold !important;
+        border-left: 4px solid #F18F01 !important;
+    }
+    
+    .dataset-cic-highlight {
+        background: #d4edda !important;
+        font-weight: bold !important;
+        border-left: 4px solid #28a745 !important;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -415,8 +451,10 @@ def plot_model_comparison(df):
     df_sorted = df_sorted.fillna(0)
     datasets = df_sorted['Dataset'].tolist()
     
-    # Colors for datasets (NSL-KDD gets special color)
-    bar_colors = ['#2E86AB', '#F18F01', '#A23B72']
+    # Colors for datasets and models
+    deep_color = '#2E86AB'  # CNN-LSTM-Attention
+    rf_color = '#F18F01'    # Random Forest
+    xgb_color = '#A23B72'   # XGBoost
     
     fig = make_subplots(
         rows=2, cols=2,
@@ -430,88 +468,109 @@ def plot_model_comparison(df):
     has_rf = 'RF_Accuracy' in df_sorted.columns
     has_xgb = 'XGB_Accuracy' in df_sorted.columns
     
-    # 1. Accuracy plot
+    # 1. Accuracy plot - Row 1, Col 1
+    # CNN-LSTM-Attention
     fig.add_trace(
         go.Bar(name='CNN-LSTM-Attention', x=datasets, y=df_sorted['Deep_Accuracy'],
-               marker_color=bar_colors, text=df_sorted['Deep_Accuracy'].round(4),
+               marker_color=deep_color, text=df_sorted['Deep_Accuracy'].round(4),
                textposition='outside', texttemplate='%{text:.2%}',
-               hovertemplate='<b>%{x}</b><br>Accuracy: %{y:.2%}<extra></extra>'),
+               hovertemplate='<b>%{x}</b><br>CNN-LSTM Accuracy: %{y:.2%}<extra></extra>'),
         row=1, col=1
     )
     
     if has_rf:
         fig.add_trace(
             go.Bar(name='Random Forest', x=datasets, y=df_sorted['RF_Accuracy'],
-                   marker_color='#f093fb', text=df_sorted['RF_Accuracy'].round(4),
+                   marker_color=rf_color, text=df_sorted['RF_Accuracy'].round(4),
                    textposition='outside', texttemplate='%{text:.2%}',
-                   hovertemplate='<b>%{x}</b><br>Accuracy: %{y:.2%}<extra></extra>'),
+                   hovertemplate='<b>%{x}</b><br>RF Accuracy: %{y:.2%}<extra></extra>'),
             row=1, col=1
         )
     
     if has_xgb:
         fig.add_trace(
             go.Bar(name='XGBoost', x=datasets, y=df_sorted['XGB_Accuracy'],
-                   marker_color='#4facfe', text=df_sorted['XGB_Accuracy'].round(4),
+                   marker_color=xgb_color, text=df_sorted['XGB_Accuracy'].round(4),
                    textposition='outside', texttemplate='%{text:.2%}',
-                   hovertemplate='<b>%{x}</b><br>Accuracy: %{y:.2%}<extra></extra>'),
+                   hovertemplate='<b>%{x}</b><br>XGB Accuracy: %{y:.2%}<extra></extra>'),
             row=1, col=1
         )
     
-    # 2. F1 plot
+    # 2. F1 plot - Row 1, Col 2
     fig.add_trace(
         go.Bar(name='CNN-LSTM-Attention', x=datasets, y=df_sorted['Deep_F1'],
-               marker_color=bar_colors, text=df_sorted['Deep_F1'].round(4),
+               marker_color=deep_color, text=df_sorted['Deep_F1'].round(4),
                textposition='outside', texttemplate='%{text:.2%}',
-               hovertemplate='<b>%{x}</b><br>F1-Score: %{y:.2%}<extra></extra>', showlegend=False),
+               hovertemplate='<b>%{x}</b><br>CNN-LSTM F1: %{y:.2%}<extra></extra>', 
+               showlegend=False),
         row=1, col=2
     )
     
     if has_rf:
         fig.add_trace(
             go.Bar(name='Random Forest', x=datasets, y=df_sorted['RF_F1'],
-                   marker_color='#f093fb', text=df_sorted['RF_F1'].round(4),
+                   marker_color=rf_color, text=df_sorted['RF_F1'].round(4),
                    textposition='outside', texttemplate='%{text:.2%}',
-                   hovertemplate='<b>%{x}</b><br>F1-Score: %{y:.2%}<extra></extra>', showlegend=False),
+                   hovertemplate='<b>%{x}</b><br>RF F1: %{y:.2%}<extra></extra>', 
+                   showlegend=False),
             row=1, col=2
         )
     
     if has_xgb:
         fig.add_trace(
             go.Bar(name='XGBoost', x=datasets, y=df_sorted['XGB_F1'],
-                   marker_color='#4facfe', text=df_sorted['XGB_F1'].round(4),
+                   marker_color=xgb_color, text=df_sorted['XGB_F1'].round(4),
                    textposition='outside', texttemplate='%{text:.2%}',
-                   hovertemplate='<b>%{x}</b><br>F1-Score: %{y:.2%}<extra></extra>', showlegend=False),
+                   hovertemplate='<b>%{x}</b><br>XGB F1: %{y:.2%}<extra></extra>', 
+                   showlegend=False),
             row=1, col=2
         )
     
-    # 3. Precision plot (if available)
+    # 3. Precision plot - Row 2, Col 1
     if 'Deep_Precision' in df_sorted.columns:
         fig.add_trace(
             go.Bar(name='CNN-LSTM-Attention', x=datasets, y=df_sorted['Deep_Precision'],
-                   marker_color=bar_colors, text=df_sorted['Deep_Precision'].round(4),
+                   marker_color=deep_color, text=df_sorted['Deep_Precision'].round(4),
                    textposition='outside', texttemplate='%{text:.2%}',
-                   hovertemplate='<b>%{x}</b><br>Precision: %{y:.2%}<extra></extra>', showlegend=False),
+                   hovertemplate='<b>%{x}</b><br>CNN-LSTM Precision: %{y:.2%}<extra></extra>', 
+                   showlegend=False),
             row=2, col=1
         )
     
-    # 4. Recall plot (if available)
+    # 4. Recall plot - Row 2, Col 2
     if 'Deep_Recall' in df_sorted.columns:
         fig.add_trace(
             go.Bar(name='CNN-LSTM-Attention', x=datasets, y=df_sorted['Deep_Recall'],
-                   marker_color=bar_colors, text=df_sorted['Deep_Recall'].round(4),
+                   marker_color=deep_color, text=df_sorted['Deep_Recall'].round(4),
                    textposition='outside', texttemplate='%{text:.2%}',
-                   hovertemplate='<b>%{x}</b><br>Recall: %{y:.2%}<extra></extra>', showlegend=False),
+                   hovertemplate='<b>%{x}</b><br>CNN-LSTM Recall: %{y:.2%}<extra></extra>', 
+                   showlegend=False),
             row=2, col=2
         )
     
+    # Update layout with proper legend spacing
     fig.update_layout(
         height=600,
         showlegend=True,
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+        legend=dict(
+            orientation="h", 
+            yanchor="top",  # Changed from "bottom" to "top"
+            y=1.15,         # Increased from 1.02 to 1.15 for more space
+            xanchor="center", 
+            x=0.5,
+            font=dict(size=12, weight="bold"),
+            bgcolor="rgba(255,255,255,0.9)",
+            bordercolor="#667eea",
+            borderwidth=2,
+            itemsizing="constant",
+            itemwidth=30
+        ),
         template='plotly_white',
-        bargap=0.15
+        bargap=0.15,
+        margin=dict(t=80, b=40, l=40, r=40)  # Increased top margin for legend
     )
     
+    # Update y-axes with ranges
     fig.update_yaxes(range=[0.92, 1.0], tickformat='.1%', row=1, col=1)
     fig.update_yaxes(range=[0.92, 1.0], tickformat='.1%', row=1, col=2)
     fig.update_yaxes(range=[0.92, 1.0], tickformat='.1%', row=2, col=1)
@@ -822,7 +881,7 @@ def main():
         if nsl_present:
             nsl_data = df[df['Dataset'] == 'NSL-KDD'].iloc[0]
             st.markdown(f"""
-            <div style="background: #d1ecf1; padding: 1rem; border-radius: 10px; border-left: 4px solid #2E86AB; margin: 1rem 0;">
+            <div class="dataset-nsl-highlight" style="background: #d1ecf1; padding: 1rem; border-radius: 10px; border-left: 4px solid #2E86AB; margin: 1rem 0;">
                 <h4 style="color: #2E86AB; margin: 0;">🔵 NSL-KDD Performance</h4>
                 <p style="margin: 0.5rem 0 0 0;">
                     Accuracy: <b>{nsl_data['Deep_Accuracy']:.2%}</b> | 
@@ -858,22 +917,28 @@ def main():
         
         with col1:
             st.markdown("#### 📈 Model Performance Comparison")
+            st.markdown('<div class="chart-container">', unsafe_allow_html=True)
             fig = plot_model_comparison(filtered_df)
             if fig:
                 st.plotly_chart(fig, use_container_width=True)
+            st.markdown('</div>', unsafe_allow_html=True)
         
         with col2:
             if show_radar:
                 st.markdown("#### 🎯 Performance Radar Chart")
+                st.markdown('<div class="chart-container">', unsafe_allow_html=True)
                 fig = plot_radar_comparison(filtered_df)
                 if fig:
                     st.plotly_chart(fig, use_container_width=True)
+                st.markdown('</div>', unsafe_allow_html=True)
         
         if show_improvement and len(filtered_df) > 0:
             st.markdown("#### 📈 Improvement Over Baselines")
+            st.markdown('<div class="chart-container">', unsafe_allow_html=True)
             fig = plot_improvement_chart(filtered_df)
             if fig and fig.data:
                 st.plotly_chart(fig, use_container_width=True)
+            st.markdown('</div>', unsafe_allow_html=True)
         
         # Show dataset-specific metrics
         st.markdown("---")
@@ -888,17 +953,20 @@ def main():
                     bg_color = "#d1ecf1"
                     border_color = "#2E86AB"
                     icon = "🔵"
+                    css_class = "dataset-nsl-highlight"
                 elif dataset == 'UNSW-NB15':
                     bg_color = "#fff3cd"
                     border_color = "#F18F01"
                     icon = "🟡"
+                    css_class = "dataset-unsw-highlight"
                 else:
                     bg_color = "#d4edda"
                     border_color = "#28a745"
                     icon = "🟢"
+                    css_class = "dataset-cic-highlight"
                 
                 st.markdown(f"""
-                <div style="background: {bg_color}; padding: 0.75rem 1rem; border-radius: 10px; border-left: 4px solid {border_color}; margin: 0.5rem 0;">
+                <div class="{css_class}" style="background: {bg_color}; padding: 0.75rem 1rem; border-radius: 10px; border-left: 4px solid {border_color}; margin: 0.5rem 0;">
                     <h5 style="margin: 0; color: {border_color};">{icon} {dataset}</h5>
                     <p style="margin: 0.25rem 0 0 0; font-size: 0.9rem;">
                         Accuracy: <b>{data['Deep_Accuracy']:.2%}</b> | 
@@ -990,9 +1058,11 @@ def main():
         
         with col1:
             st.markdown("#### 📊 Accuracy Comparison")
+            st.markdown('<div class="chart-container">', unsafe_allow_html=True)
             fig = plot_model_comparison(filtered_df)
             if fig:
                 st.plotly_chart(fig, use_container_width=True)
+            st.markdown('</div>', unsafe_allow_html=True)
         
         with col2:
             st.markdown("#### 📈 Performance Metrics")
@@ -1033,9 +1103,11 @@ def main():
         
         if show_radar:
             st.markdown("#### 🎯 Performance Radar Comparison")
+            st.markdown('<div class="chart-container">', unsafe_allow_html=True)
             fig = plot_radar_comparison(filtered_df)
             if fig:
                 st.plotly_chart(fig, use_container_width=True)
+            st.markdown('</div>', unsafe_allow_html=True)
     
     # ============================================================================
     # DATASET ANALYSIS PAGE
