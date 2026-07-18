@@ -1513,7 +1513,8 @@ def main():
         
         st.markdown("### 📈 Summary Statistics")
         
-        # Create summary safely        summary_data = {
+        # Create summary safely
+        summary_data = {
             'Metric': ['Mean Accuracy', 'Mean F1-Score', 'Mean Precision', 'Mean Recall',
                       'Best Accuracy', 'Best F1-Score', 'Best Dataset'],
             'CNN-LSTM-Attention': [
